@@ -1,0 +1,80 @@
+int main(void)
+{
+   int m, n, i, j;
+   double **a, *b, *c; 
+   
+   /* dimensions */
+   printf("m n = ? \n");
+   scanf("%d %d", &m, &n);
+   if (m<1 || n<1) return 0;
+   
+   /* Dinamic memory - vectors */
+   b = (double *)malloc(n*sizeof(double));
+   c = (double *)malloc(m*sizeof(double));
+   if (b == NULL || c == NULL) {
+      printf("problems on malloc \n");
+      exit(1);
+   }
+
+   /* Matrix with dinamic memory*/
+   a = (double **)malloc(m*sizeof(double *));
+   if (a == NULL) {
+      printf("problems on malloc \n");
+      exit(2);
+   }
+   for (i=0; i<m; i++) {
+      a[i] = (double *)malloc(n*sizeof(double));
+      if (a[i] == NULL) {
+         printf("problems on malloc \n");
+         exit(3);
+      }
+   }
+
+   /*  random generation A i b , a [-1, +1] */
+   srand(time(NULL));
+   for (i=0; i<m; i++) 
+      for (j=0; j<n; j++) 
+         a[i][j] = 2 * (double)rand() / RAND_MAX -1;
+   for (j=0; j<n; j++)
+      b[j] = 2 * (double)rand() / RAND_MAX -1;
+      
+   /*  c = Ab */
+   for (i=0; i<m; i++) {
+      c[i] = 0.;
+      for (j=0; j<n; j++) 
+         c[i] = c[i]+a[i][j]*b[j];
+   }
+   
+   /* writing (only for small dimensions) */ 
+   if (m <= 10 && n <= 10) {
+
+      printf("matriu A: \n");
+      for (i=0; i<m; i++) {
+         for (j=0; j<n; j++) 
+            printf(" %+.2f ", a[i][j]);
+         printf("\n");
+      }
+
+      printf("vector b: \n");
+      for (j=0; j<n; j++) 
+         printf(" %+.2f ", b[j]);
+      printf("\n");
+
+      printf("vector Ab: \n");
+      for (i=0; i<m; i++) 
+         printf(" %+.2f ", c[i]);
+      printf("\n");
+   }
+   else {
+      printf("done without writing \n");
+   }
+  
+   /* alliberament de memòria */ 
+   for (i=0; i<m; i++) 
+      free(a[i]);
+   free(a);
+
+   free(b);
+   free(c);
+   
+   return 0;
